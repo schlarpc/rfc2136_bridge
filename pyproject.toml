@@ -1,0 +1,25 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "rfc2136_bridge"
+authors = [
+    {name = "Chaz Schlarp", email = "schlarpc@gmail.com"},
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+]
+dynamic = ["version", "description"]
+dependencies = [
+    "aiobotocore",
+    "dnspython",
+    "trio",
+    "trio-asyncio",
+]
+
+[project.urls]
+Source = "https://github.com/schlarpc/rfc2136_bridge"
+
+[project.scripts]
+rfc2136_bridge = "rfc2136_bridge.app:main"
