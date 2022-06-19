@@ -41,7 +41,7 @@ async def list_hosted_zones(
 
     The results of this function are cached for a short time.
     """
-    if _cache.get("timestamp", 0) < (time.monotonic() - _cache_ttl):
+    if "timestamp" not in _cache or _cache["timestamp"] < (time.monotonic() - _cache_ttl):
         async with a2t(session.create_client("route53")) as route53:
             paginator = route53.get_paginator(route53.list_hosted_zones.__name__)
             page_iter = paginator.paginate()
