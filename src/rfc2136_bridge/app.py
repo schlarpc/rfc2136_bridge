@@ -30,8 +30,6 @@ from trio_asyncio import aio_as_trio as a2t
 
 logger = logging.getLogger(__name__)
 
-session = aiobotocore.session.get_session()
-
 
 async def list_hosted_zones(
     *, _cache={}, _cache_ttl: int = 300
@@ -42,7 +40,7 @@ async def list_hosted_zones(
     The results of this function are cached for a short time.
     """
     if "timestamp" not in _cache or _cache["timestamp"] < (time.monotonic() - _cache_ttl):
-        async with a2t(session.create_client("route53")) as route53:
+        async with a2t(aiobotocore.session.get_session().create_client("route53")) as route53:
             paginator = route53.get_paginator(route53.list_hosted_zones.__name__)
             page_iter = paginator.paginate()
             data = set()
@@ -98,7 +96,7 @@ async def push_changes_to_route53(zone_changes: dict[str, list[dict[str, str]]])
     """
     Push a set of changes to Route 53 hosted zones.
     """
-    async with a2t(session.create_client("route53")) as route53:
+    async with a2t(aiobotocore.session.get_session().create_client("route53")) as route53:
         change_resource_record_sets = a2t(route53.change_resource_record_sets)
         wait_for_change = a2t(route53.get_waiter("resource_record_sets_changed").wait)
         for hosted_zone_id, changes in zone_changes.items():
